@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="src" path="src_mapstore"/>
+	<classpathentry kind="src" path="src_swing"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="lib" path="lib/BrowserLauncher2-1_3.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/httpmime-4.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/jnlp.jar"/>
+	<classpathentry kind="lib" path="lib/LobbyClient.jar"/>
+	<classpathentry kind="lib" path="lib/LobbyServer.jar"/>
+	<classpathentry kind="lib" path="lib/m3gbasic.jar"/>
+	<classpathentry kind="lib" path="lib/midletrunner.jar"/>
+	<classpathentry kind="lib" path="lib/TranslationTool.jar"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="res_mapchooser"/>
+	<classpathentry kind="lib" path="lib/SwingME.jar"/>
+	<classpathentry kind="lib" path="lib/Grasshopper.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
