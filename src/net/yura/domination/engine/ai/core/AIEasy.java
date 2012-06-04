@@ -1,8 +1,10 @@
 // Yura Mamyrin
 
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.core;
 
 import java.util.Vector;
+
+import net.yura.domination.engine.ai.Discoverable;
 import net.yura.domination.engine.core.Country;
 
 /**
@@ -10,9 +12,9 @@ import net.yura.domination.engine.core.Country;
  * @author Yura Mamyrin
  */
 
+@Discoverable
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class AIEasy extends AICrap {
-	private static final long serialVersionUID = 1L;
 
 	protected class Attack {
 	Country source;

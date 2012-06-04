@@ -1,89 +1,58 @@
 package net.yura.domination.engine.ai;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+
 import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.ai.core.AICrap;
 import net.yura.domination.engine.core.RiskGame;
 
 public class AIPlayer {
-/*
-	public static AICrap aicrap = new AICrap();
-	private static AIEasy aieasy = new AIEasy();
-	private static AIEasy aihard = new AIHard();
-	private static AIEasy aihardc = new AIHardCapital();
-	private static AIEasy aihardm = new AIHardMission();
-	private static AIVeryHard aiveryhard = new AIVeryHard();
-*/
+
 	private static int wait=500;
+	private static int timeout = 30;
 
 	public static int getWait() {
-
 		return wait;
 
 	}
 	public static void setWait(int w) {
-
 		wait = w;
-
 	}
 
 	public static void play(Risk risk) {
 
-		RiskGame game = risk.getGame();
+		final RiskGame game = risk.getGame();
 		
-		AI usethisAI=null;
+		AI thisAI = null;
 		AI ai = game.getCurrentPlayer().getAI();
 		int mode = game.getGameMode();
 		if (mode == RiskGame.MODE_DOMINATION)
-			usethisAI = ai;
+			thisAI = ai;
 		else if (mode == RiskGame.MODE_CAPITAL && ai.getCapitalAI() != null)
-			usethisAI = ai.getCapitalAI();
+			thisAI = ai.getCapitalAI();
 		else if (mode == RiskGame.MODE_SECRET_MISSION && ai.getMissionAI() != null)
-			usethisAI = ai.getMissionAI();
+			thisAI = ai.getMissionAI();
 
-		/*
-		int skill =  game.getCurrentPlayer().getType();
-
-		AICrap usethisAI=null;
-
-		if (skill == Player.PLAYER_AI_CRAP ) {
-
-			usethisAI = aicrap;
-
-		}
-		else if (skill == Player.PLAYER_AI_EASY ) {
-
-			usethisAI = aieasy;
-
-		}
-		else if (skill == Player.PLAYER_AI_VERY_HARD){
-			usethisAI = aiveryhard;
-		}
+		final AI usethisAI = thisAI;
 		
-		else if (skill == Player.PLAYER_AI_HARD) {
 
-			int mode = game.getGameMode();
-
-			if (mode == RiskGame.MODE_DOMINATION) {
-
-				usethisAI = aihard;
-
-			}
-			else if (mode == RiskGame.MODE_CAPITAL) {
-
-				usethisAI = aihardc;
-
-			}
-			else if (mode == RiskGame.MODE_SECRET_MISSION) {
-
-				usethisAI = aihardm;
-
-			}
-
-		}
-		*/
-
-		String output = getOutput(game,usethisAI);
-
+		FutureTask<String> future = new FutureTask<String>(new Callable<String>() {
+			   public String call() {
+			       return getOutput(game,usethisAI);
+			   }
+			});
 		
+		new Thread(future).start();		
+		
+		String output = null;
+		try{
+			output = future.get(timeout, TimeUnit.SECONDS);
+		} catch (Exception ex) {
+			output = getOutput(game, new AICrap());
+		}
+
 		try { Thread.sleep(wait); }
 		catch(InterruptedException e) {}
 
@@ -92,6 +61,12 @@ public class AIPlayer {
 	}
 
 
+	public static int getTimeout() {
+		return timeout;
+	}
+	public static void setTimout(int timeout) {
+		AIPlayer.timeout = timeout;
+	}
 	public static String getOutput(RiskGame game,AI usethisAI) {
 		game.NoEmptyCountries();
 		usethisAI.setGame(game);

@@ -1,6 +1,6 @@
 //  Group D
 
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.core;
 
 import java.util.Vector;
 import net.yura.domination.engine.core.Continent;
@@ -16,11 +16,6 @@ import net.yura.domination.engine.core.Player;
 @SuppressWarnings({ "rawtypes" })
 public class AIHardMission extends AIHard {
 
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	public AIHardMission() {
 		super();

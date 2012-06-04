@@ -1,6 +1,6 @@
 //  Group D
 
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.core;
 
 import java.util.Vector;
 import net.yura.domination.engine.core.Continent;
@@ -15,12 +15,6 @@ import net.yura.domination.engine.core.Player;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class AIHardCapital extends AIHard {
 
-	
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	public AIHardCapital() {
 		super();
@@ -314,7 +308,7 @@ public class AIHardCapital extends AIHard {
                     Vector cankill = new Vector();
 
                     for (int i=0; i<players.size(); i++) {
-			if (( (Player) players.elementAt(i)).getNoTerritoriesOwned() < 3 && ( (Player) players.elementAt(i)) != player)
+			if (( (Player) players.elementAt(i)).getTerritoriesOwnedSize() < 3 && ( (Player) players.elementAt(i)) != player)
 			    cankill.addElement((Player) players.elementAt(i));
                     }
 

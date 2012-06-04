@@ -26,4 +26,27 @@ Il metodo gerAIs() viene utilizzato dall'interfaccia per ottenere la lista di tu
 
 - Danilo Iannelli
 
+---------------------------------
 
+UPDATE 13/04/2012
+
+Il progetto e' stato in parte riorganizzato, e' stata aggiunta l'autodiscovery delle AI e una nuova classe BaseAI con
+molti metodi semplificati, un'interfaccia ad oggetti e sanity check per ogni azione con il lancio di eccezioni, semplificando il 
+debugging.
+
+
+I metodi orientati agli oggetti definiti da BaseAI seguono la convenzione "on{NomeEvento}()", per distinguersi
+da quelli "classici" che utilizzano le stringhe. Solo alcuni metodi sono dichiarati astratti (quelli per cui non e' possibile
+definire un'azione utile di default), mentre per tutti gli altri viene fornita un'implementazione di default.
+
+L'autodiscovery permette all'engine di scoprire l'esistenza di una nuova AI semplicemente creando una classe che rispetti queste
+convenzioni:
+- Il nome della classe deve incominciare per "AI"
+- Deve essere marcata con l'annotazione @Discoverable
+
+Esempio:
+
+@Discoverable
+class AIDemo extends BaseAI {
+	// ...
+}

@@ -145,7 +145,7 @@ public class Continent implements Serializable {
 	 * Returns a vector of the territories contained within a continent
 	 * @return territoriesContained
 	 */
-	public Vector getTerritoriesContained() {
+	public Vector<Country> getTerritoriesContained() {
 		return territoriesContained;
 	}
 

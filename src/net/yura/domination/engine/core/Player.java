@@ -53,6 +53,7 @@ public class Player implements Serializable {
 	 */
 	public Player(AI ai, String n, int c, String a) {
 		this.ai = ai;
+		this.ai.setPlayer(this);
 		name = n;
 		color = c;
 		territoriesOwned = new Vector();
@@ -71,7 +72,6 @@ public class Player implements Serializable {
 		Statistics = new Vector();
 		currentStatistic = new Statistic();
 		Statistics.add(currentStatistic);
-
 	}
 
 	public void rename(String na) {
@@ -181,7 +181,7 @@ public class Player implements Serializable {
 	 * Gets the cards that the player owns
 	 * @return Vector Returns the vector of all the cards the player owns
 	 */
-	public Vector getCards() {
+	public Vector<Card> getCards() {
 		return cardsOwned;
 	}
 
@@ -262,7 +262,7 @@ public class Player implements Serializable {
 	 * Gets the countries that the player owns
 	 * @return Vector Returns a vector of all the countries the player owns
 	 */
-	public Vector getTerritoriesOwned() {
+	public Vector<Country> getTerritoriesOwned() {
 		return territoriesOwned;
 	}
 
@@ -270,7 +270,7 @@ public class Player implements Serializable {
 	 * Gets the number of countries that the player owns
 	 * @return int Returns the number of countries owned
 	 */
-	public int getNoTerritoriesOwned() {
+	public int getTerritoriesOwnedSize() {
 		return territoriesOwned.size();
 	}
 
@@ -299,7 +299,7 @@ public class Player implements Serializable {
 	 * Gets all the players that are eliminated
 	 * @return Vector Returns all the eliminated players
 	 */
-	public Vector getPlayersEliminated() {
+	public Vector<Player> getPlayersEliminated() {
 		return playersEliminated;
 	}
 

@@ -86,7 +86,7 @@ public class Country implements Serializable {
 	 * gets the countries neighbours
 	 * @return a vector of the countries ceighbours
 	 */
-	public Vector getNeighbours() {
+	public Vector<Country> getNeighbours() {
 
 		return neighbours;
 

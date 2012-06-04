@@ -48,6 +48,7 @@ import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.ai.AI;
 import net.yura.domination.engine.ai.AIManager;
+import net.yura.domination.engine.ai.AIManager.AIClass;
 import net.yura.domination.engine.ai.AIPlayer;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
@@ -96,6 +97,9 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 	private JRadioButton capital;
 	private JRadioButton mission;
 
+	
+	private JLabel lblAITimeout;
+	private JTextField txtAITimeout;
 	private JComboBox aiChooser;
 	/*
 	private JRadioButton human;
@@ -126,6 +130,8 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 	private MyColor[] Colors;
 
 	private ResourceBundle resb;
+	
+	private String cardName, mapName;
 
 	/**
 	 * the tab focus cycle list
@@ -411,7 +417,11 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		//String[] difficulties = { resb.getString("newgame.player.type.human"), resb.getString("newgame.player.type.crapai"), resb.getString("newgame.player.type.easyai"), resb.getString("newgame.player.type.hardai"), "Molto Difficile" };
 		aiChooser = new JComboBox(AIManager.getAIs().toArray());
 		aiChooser.setBounds(520, 335, 150 , 28);
-
+		lblAITimeout = new JLabel("AI Timeout (sec.):");
+		lblAITimeout.setBounds(520, 370, 100 , 28);
+		
+		txtAITimeout = new JTextField("30");
+		txtAITimeout.setBounds(620, 370, 30 , 28);
 
 		color = "black";
 		thecolor = Color.black;
@@ -513,6 +523,9 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		ngp.add(aiChooser);
 		ngp.add(playerColor);
+		
+		ngp.add(lblAITimeout);
+		ngp.add(txtAITimeout);
 
 		ngp.add(resetplayers);
 		ngp.add(addplayer);
@@ -968,11 +981,11 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 
 		if (e.getSource()==chooseMap) {
 
-			String name = RiskUIUtil.getNewMap(this);
+			mapName = RiskUIUtil.getNewMap(this);
 
-			if (name != null) {
+			if (mapName != null) {
 
-				myrisk.parser("choosemap " + name );
+				myrisk.parser("choosemap " + mapName );
 
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -985,11 +998,11 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 		}
 		else if (e.getSource()==chooseCards) {
 
-			String name = RiskUIUtil.getNewFile( this, RiskFileFilter.RISK_CARDS_FILES);
+			cardName = RiskUIUtil.getNewFile( this, RiskFileFilter.RISK_CARDS_FILES);
 
-			if (name != null) {
+			if (cardName != null) {
 
-				myrisk.parser("choosecards " + name );
+				myrisk.parser("choosecards " + cardName );
 
 			}
 
@@ -1023,7 +1036,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 			 */
 
 
-			myrisk.parser("newplayer "+ ((AI)aiChooser.getSelectedItem()).getId() +" "+ color +" "+ playerName.getText() );
+			myrisk.parser("newplayer "+ ((AIClass)aiChooser.getSelectedItem()).getId() +" "+ color +" "+ playerName.getText() );
 
 		}
 		else if (e.getSource()==start) {
@@ -1040,11 +1053,15 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 					RiskUtil.savePlayers(myrisk, getClass());
 				}
 
+				AIPlayer.setTimout(Integer.parseInt(txtAITimeout.getText()));
+				
 				if (fast.isSelected())
 					AIPlayer.setWait(80);
 				if (multipleGames.isSelected()){
 					AIPlayer.setWait(1);
 					RiskLogger.setGamesNumber(Integer.parseInt(numPartite.getText()));
+					cardName = cardsFile.getText();
+					RiskLogger.setMapCards(mapName, cardName);
 					RiskLogger.setRisk(myrisk);
 				}else{
 

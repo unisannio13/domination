@@ -29,6 +29,7 @@ import javax.swing.text.DefaultCaret;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.ai.AI;
 import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.RiskGame;
 
 public class RiskLogger {
 	public static String LOGGER = "RiskLogger";
@@ -191,7 +192,6 @@ public class RiskLogger {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	public static void setRisk(Risk risk) {
 		RiskLogger.risk = risk;
 		Vector<Player> pls = risk.getGame().getPlayers();
@@ -209,9 +209,25 @@ public class RiskLogger {
 		risk.parser("startgame domination increasing");
 	}
 
+
+	private static String mapName, cardName;
+	
+	public static void setMapCards(String mapName, String cardName) {
+		if(mapName != null)
+			RiskLogger.mapName = mapName;
+		else
+			RiskLogger.mapName = RiskGame.getDefaultMap();
+		if (cardName != null)
+			RiskLogger.cardName = cardName;
+		else
+			RiskLogger.cardName = RiskGame.getDefaultCards();
+	}
+
 	private static void startOver() {
 		risk.parser("closegame");
 		risk.parser("newgame");
+		risk.parser("choosemap "+mapName);
+		risk.parser("choosecards "+cardName);
 		for(StatPlayer p: players.values()){
 			risk.parser("newplayer "+ p.getAI().getId() +" "+ p.getColor() +" "+ p.getName() );
 		}
@@ -272,6 +288,8 @@ public class RiskLogger {
 	
 		
 	}
+
+	
 
 	
 }

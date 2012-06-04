@@ -1,9 +1,12 @@
 // Yura Mamyrin
 
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.core;
 
 import java.util.Random;
 import java.util.Vector;
+
+import net.yura.domination.engine.ai.AI;
+import net.yura.domination.engine.ai.Discoverable;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
@@ -13,9 +16,9 @@ import net.yura.domination.engine.core.Player;
  * @author Yura Mamyrin
  */
 
+@Discoverable
 @SuppressWarnings("rawtypes" )
 public class AICrap extends AI{
-	private static final long serialVersionUID = 1L;
 	protected Random r = new Random(); // this was always static
 
 

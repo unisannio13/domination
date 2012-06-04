@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.ai.AI;
+import net.yura.domination.engine.ai.EnemyCommandsEventSource;
+import net.yura.domination.engine.ai.EnemyCommandsListener;
 import net.yura.domination.engine.translation.MapTranslator;
 import net.yura.domination.logger.RiskLogger;
 
@@ -412,7 +414,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * Checks whether the player deserves a card during at the end of their go
 	 * @return String Returns the name of the card if deserves a card, else else returns empty speech-marks
 	 */
-	public String getDesrvedCard() {
+	public String getDeservedCard() {
 		//check to see if the player deserves a new risk card
 		if (capturedCountry==true && Cards.size() > 0) {
 
@@ -432,7 +434,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public Player endGo() {
 
 		if (gameState==STATE_END_TURN) {
-
+			
+			
 			//System.out.print("go ended\n"); // testing
 
 			// work out who is the next player
@@ -454,7 +457,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 											// && (currentPlayer.getType() != 3)
 
-				else if ( currentPlayer.getNoTerritoriesOwned() > 0       ) {break; }
+				else if ( currentPlayer.getTerritoriesOwnedSize() > 0       ) {break; }
 
 			}
 
@@ -466,11 +469,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 				currentPlayer.nextTurn();
 
 				// add new armies for the Territories Owned
-				if ( currentPlayer.getNoTerritoriesOwned() < 9 ) {
+				if ( currentPlayer.getTerritoriesOwnedSize() < 9 ) {
 					currentPlayer.addArmies(3);
 				}
 				else {
-					currentPlayer.addArmies( currentPlayer.getNoTerritoriesOwned() / 3 );
+					currentPlayer.addArmies( currentPlayer.getTerritoriesOwnedSize() / 3 );
 				}
 
 				// add new armies for the Continents Owned
@@ -496,6 +499,15 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 			capturedCountry=false;
 			tradeCap=false;
+			
+//			System.out.println("Players");
+//			for (int i = 0; i<Players.size(); i++){
+//				Player p = (Player) Players.elementAt(i);
+//				System.out.println("  "+ i+") "+p.getColor() + " "+ p.getName());
+//			}
+//			System.out.println("Current: " + currentPlayer.getColor() + " "+ currentPlayer.getName());
+			
+			
 
 			return currentPlayer;
 
@@ -1026,7 +1038,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 					logger.info(log.toString());
 				}
 				// if the player has been eliminated
-				if ( lostPlayer.getNoTerritoriesOwned() == 0) {
+				if ( lostPlayer.getTerritoriesOwnedSize() == 0) {
 
 					result[3]=2;
 
@@ -1043,6 +1055,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 						// gameState=STATE_BATTLE_WON;
 						tradeCap=true;
 					}
+					
+					if(lostPlayer.getAI() instanceof EnemyCommandsListener)
+						EnemyCommandsEventSource.removeEnemyCommandsListener((EnemyCommandsListener) lostPlayer.getAI());
 					
 					if(Risk.isLogLosersWinner())
 						logger.info("\n!!! "+lostPlayer.getName()+"("+lostPlayer.getAI().getName()+") ELIMINATO!!!\n\n");
@@ -1202,16 +1217,16 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 	public void workOutEndGoStats(Player p) {
 
-		int countries = p.getNoTerritoriesOwned();
+		int countries = p.getTerritoriesOwnedSize();
 		int armies = p.getNoArmies();
-		int continents = getNoContinentsOwned(p);
+		int continents = getNumberContinentsOwned(p);
 		int conectedEmpire = ((Vector)getConnectedEmpire(p)).size() ;
 
 		p.currentStatistic.endGoStatistics(countries, armies, continents, conectedEmpire);
 
 	}
 
-	public Vector getConnectedEmpire(Player p) {
+	public Vector<Country> getConnectedEmpire(Player p) {
 
 		Vector t = (Vector)p.getTerritoriesOwned().clone();
 
@@ -1374,7 +1389,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 			if (
 					m.getPlayer() !=null && // check is this is indeed a Elim Player card
 					m.getPlayer() != currentPlayer && // check if its not the current player u need to eliminate
-					((Player)m.getPlayer()).getNoTerritoriesOwned()==0 && // chack if that player has been eliminated
+					((Player)m.getPlayer()).getTerritoriesOwnedSize()==0 && // chack if that player has been eliminated
 					((Vector)currentPlayer.getPlayersEliminated()).contains( m.getPlayer() ) //check if it was you who eliminated them
 			) {
 
@@ -1385,13 +1400,13 @@ transient - A keyword in the Java programming language that indicates that a fie
 			}
 			else if (
 					m.getNoofcountries() != 0 && m.getNoofarmies() != 0 && // check if this card has a value for capture teretories
-					( m.getPlayer() == null || ((Player)m.getPlayer()).getNoTerritoriesOwned()==0 || (Player)m.getPlayer() == currentPlayer ) &&
-					m.getNoofcountries() <= currentPlayer.getNoTerritoriesOwned() // do you have that number of countries captured
+					( m.getPlayer() == null || ((Player)m.getPlayer()).getTerritoriesOwnedSize()==0 || (Player)m.getPlayer() == currentPlayer ) &&
+					m.getNoofcountries() <= currentPlayer.getTerritoriesOwnedSize() // do you have that number of countries captured
 			) {
 
 				int n=0;
 
-				for (int c=0; c< currentPlayer.getNoTerritoriesOwned() ; c++) {
+				for (int c=0; c< currentPlayer.getTerritoriesOwnedSize() ; c++) {
 					if ( ((Country)((Vector)currentPlayer.getTerritoriesOwned()).elementAt(c)).getArmies() >= m.getNoofarmies() ) n++;
 
 				}
@@ -1435,7 +1450,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		if ( ANY_CONTINENT.equals(c) ) {
 
-			return (getNoContinentsOwned(currentPlayer) >=n);
+			return (getNumberContinentsOwned(currentPlayer) >=n);
 
 		}
 		else if (c!=null) {
@@ -2047,7 +2062,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	/**
 	 * Shuffles the countries
 	 */
-	public Vector shuffleCountries() {
+	public Vector<Country> shuffleCountries() {
 
 		Vector oldCountries = new Vector(Arrays.asList( Countries ));
 
@@ -2205,7 +2220,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * Gets all the players
 	 * @return Vector Return all the players
 	 */
-	public Vector getPlayers() {
+	public Vector<Player> getPlayers() {
 		return Players;
 	}
 
@@ -2213,7 +2228,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * Gets all the players
 	 * @return Vector Return all the players
 	 */
-	public Vector getPlayersStats() {
+	public Vector<Player> getPlayersStats() {
 
 		for (int c=0; c< Players.size() ; c++) {
 			workOutEndGoStats( (Player)Players.elementAt(c) );
@@ -2278,7 +2293,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 		return mapfile; //.getFile().substring( mapfile.getFile().lastIndexOf("/")+1 );
 	}
 
-	public Vector getCards() {
+	public Vector<Card> getCards() {
 		return Cards;
 	}
 
@@ -2327,7 +2342,7 @@ System.out.print(str+"]\n");
 	 * @param p The player you want to find continents for
 	 * @return int Return the number of continents a player owns
 	 */
-	public int getNoContinentsOwned(Player p) {
+	public int getNumberContinentsOwned(Player p) {
 
 		int total=0;
 

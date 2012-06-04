@@ -1,0 +1,41 @@
+; map: UnisannioWar2.map
+; Made with yura.net Domination 1.1.0.8
+; OS: Windows 7 6.1 Service Pack 1 (64bit) on amd64
+
+[files]
+pic UnisannioWar2_pic.png
+map UnisannioWar2_map.gif
+crd UnisannioWar2.cards
+
+[continents]
+Giallo 2 yellow
+Rosso 1 #ff8087
+Blu 2 #0000cc
+
+[countries]
+1 Villania 1 38 67
+2 Santon_joi 1 231 93
+3 Troiland 1 429 40
+4 Tortor_colony 1 63 222
+5 Aversano_city 1 215 205
+6 New_Luccas 2 180 341
+7 Casolar_woods 2 383 358
+8 Glielmo_valley 2 502 362
+9 Visaggio_coast 3 552 168
+10 Zimeo_island 3 609 61
+11 Canforland 3 584 280
+12 Dipentopoli 3 650 364
+
+[borders]
+1 2 4 5
+2 1 9 5 3
+3 10 9 2
+4 1 6 5
+5 1 9 7 6 4 2
+6 7 5 4
+7 8 5 6
+8 12 11 7
+9 11 10 5 2 3
+10 9 11 3
+11 12 9 10 8
+12 11 8

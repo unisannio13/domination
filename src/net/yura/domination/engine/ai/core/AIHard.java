@@ -1,8 +1,10 @@
 //  Group D
 
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.core;
 
 import java.util.Vector;
+
+import net.yura.domination.engine.ai.Discoverable;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
@@ -12,13 +14,15 @@ import net.yura.domination.engine.core.Player;
  * @author SE Group D
  */
 
+@Discoverable
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class AIHard extends AIEasy {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	
+	@Override
+	public void onInit() {
+		setCapitalAI(new AIHardCapital());
+		setMissionAI(new AIHardMission());
+	}
 
 	public String getPlaceArmies() {
 
@@ -464,7 +468,7 @@ public class AIHard extends AIEasy {
 		Vector cankill = new Vector();
 
 		for (int i=0; i<players.size(); i++) {
-			if (( (Player) players.elementAt(i)).getNoTerritoriesOwned() < 4 && ( (Player) players.elementAt(i)) != player)
+			if (( (Player) players.elementAt(i)).getTerritoriesOwnedSize() < 4 && ( (Player) players.elementAt(i)) != player)
 				cankill.addElement((Player) players.elementAt(i));
 		}
 
@@ -517,7 +521,7 @@ public class AIHard extends AIEasy {
 		int m=((Country)game.getDefender()).getArmies();
 
 		// If we are trying to eliminate a player, fight longer.
-		if (game.getDefender().getOwner().getNoTerritoriesOwned() < 4)
+		if (game.getDefender().getOwner().getTerritoriesOwnedSize() < 4)
 			m -= 3;
 
 		//If we are trying to break a continent bonus, fight to the death.
@@ -872,8 +876,8 @@ public class AIHard extends AIEasy {
 		//Simple Bubble Sort to sort the players in order.    	
 		for (int i=0; i<orderedPlayers.length-1; i++) {
 			for (int j=0; j<orderedPlayers.length-1; j++) {
-				if (orderedPlayers[j].getNoTerritoriesOwned() + orderedPlayers[j].getNoArmies() <
-						orderedPlayers[j+1].getNoTerritoriesOwned() + orderedPlayers[j+1].getNoArmies()) {
+				if (orderedPlayers[j].getTerritoriesOwnedSize() + orderedPlayers[j].getNoArmies() <
+						orderedPlayers[j+1].getTerritoriesOwnedSize() + orderedPlayers[j+1].getNoArmies()) {
 					Player tmp = orderedPlayers[j];
 					orderedPlayers[j] = orderedPlayers[j+1];
 					orderedPlayers[j+1] = tmp;
@@ -916,7 +920,7 @@ public class AIHard extends AIEasy {
 	public String NextToEnemyToEliminate() {
 		Vector weakPlayers = new Vector();
 		for (int i=0; i<game.getPlayers().size(); i++) {
-			if (((Player)game.getPlayers().get(i)).getNoTerritoriesOwned() < 4)
+			if (((Player)game.getPlayers().get(i)).getTerritoriesOwnedSize() < 4)
 				weakPlayers.add(game.getPlayers().get(i));
 		}
 		if (weakPlayers.size() == 0)
@@ -924,7 +928,7 @@ public class AIHard extends AIEasy {
 		Vector t = player.getTerritoriesOwned();
 		Vector targetCountries = new Vector();
 		for (int i=0; i<weakPlayers.size(); i++) {
-			for (int j=0; j<((Player)weakPlayers.get(i)).getNoTerritoriesOwned(); j++) {
+			for (int j=0; j<((Player)weakPlayers.get(i)).getTerritoriesOwnedSize(); j++) {
 				targetCountries.add(((Player)weakPlayers.get(i)).getTerritoriesOwned().get(j));
 			}
 		}

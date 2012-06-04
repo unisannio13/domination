@@ -85,7 +85,7 @@ public class RiskUtil {
         }
 
         public static void printStackTrace(Throwable ex) {
-            java.util.logging.Logger.getLogger(RiskUtil.class.getName()).log(java.util.logging.Level.WARNING, null, ex);
+            java.util.logging.Logger.getLogger(RiskUtil.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         // instead of using java.awt.Color

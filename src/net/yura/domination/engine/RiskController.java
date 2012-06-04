@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import net.yura.domination.engine.ai.AI;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.logger.RiskLogger;
 
 /**
  * <p> Risk Controller </p>
@@ -55,7 +56,7 @@ public class RiskController {
 
 
 	public void sendMessage(String output, boolean redrawNeeded, boolean repaintNeeded) {
-
+		
 		Object[] arrLocal;
 
 		synchronized (this) {
@@ -242,19 +243,21 @@ public class RiskController {
 	}
 
 	public void showCardsFile(String c, boolean m) {
+		if(!RiskLogger.isMultipleGameLogger()){
 
-		Object[] arrLocal;
+			Object[] arrLocal;
 
-		synchronized (this) {
-			arrLocal = obs.toArray();
-		}
+			synchronized (this) {
+				arrLocal = obs.toArray();
+			}
 
-		try {
-			for (int i = arrLocal.length-1; i>=0; i--)
-				((RiskListener)arrLocal[i]).showCardsFile(c, m);
-		}
-		catch(Exception ex) {
-			RiskUtil.printStackTrace(ex);
+			try {
+				for (int i = arrLocal.length-1; i>=0; i--)
+					((RiskListener)arrLocal[i]).showCardsFile(c, m);
+			}
+			catch(Exception ex) {
+				RiskUtil.printStackTrace(ex);
+			}
 		}
 	}
 
