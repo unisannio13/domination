@@ -1,8 +1,10 @@
 package net.yura.domination.engine.ai;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.ai.core.AICrap;
@@ -49,13 +51,21 @@ public class AIPlayer {
 		String output = null;
 		try{
 			output = future.get(timeout, TimeUnit.SECONDS);
-		} catch (Exception ex) {
+		} catch (TimeoutException e){
 			output = getOutput(game, new AICrap());
+		} catch (InterruptedException e) {
+			output = getOutput(game, new AICrap());
+		} catch (ExecutionException e) {
+			try {
+				throw e.getCause();
+			} catch (Throwable e1) {
+				e1.printStackTrace(System.out);
+			}
 		}
 
 		try { Thread.sleep(wait); }
 		catch(InterruptedException e) {}
-
+		
 		risk.parser(output);
 
 	}

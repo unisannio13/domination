@@ -317,6 +317,7 @@ public class Player implements Serializable {
 	 */
 	public void setAI(AI ai) {
 		this.ai = ai;
+		this.ai.setPlayer(this);
 	}
 
 	/**

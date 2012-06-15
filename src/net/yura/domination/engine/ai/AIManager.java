@@ -3,9 +3,6 @@ package net.yura.domination.engine.ai;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,6 +39,7 @@ public class AIManager {
 	 * 
 	 * @author Michele Piccirillo <michele.piccirillo@gmail.com>
 	 */
+	@SuppressWarnings("unchecked")
 	private static void autodiscoverAIs() {
 		String classpath = System.getProperty("java.class.path");
 		String[] paths = classpath.split(File.pathSeparator);
