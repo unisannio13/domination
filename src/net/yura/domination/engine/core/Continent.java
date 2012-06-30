@@ -11,7 +11,7 @@ import java.util.Vector;
  * @author Yura Mamyrin
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class Continent implements Serializable {
+public class Continent implements Serializable, AbstractContinent<Player, Country> {
 
 	private static final long serialVersionUID = 1L;
 

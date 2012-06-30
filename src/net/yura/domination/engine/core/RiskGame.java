@@ -27,7 +27,7 @@ import net.yura.domination.logger.RiskLogger;
  * @author Yura Mamyrin
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class RiskGame implements Serializable { // transient
+public class RiskGame implements Serializable, AbstractRiskGame<Player, Country, Continent> { // transient
 
 	private static final long serialVersionUID = 7L;
 

@@ -13,7 +13,7 @@ import net.yura.domination.engine.ai.AI;
  * @author Yura Mamyrin
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class Player implements Serializable {
+public class Player implements Serializable, AbstractPlayer<Country> {
 
 	private static final long serialVersionUID = 1L;
 
