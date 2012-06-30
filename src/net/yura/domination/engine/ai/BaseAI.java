@@ -4,6 +4,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.yura.domination.engine.ai.commands.Attack;
+import net.yura.domination.engine.ai.commands.Fortification;
+import net.yura.domination.engine.ai.commands.Move;
+import net.yura.domination.engine.ai.commands.Trade;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 
@@ -16,168 +20,6 @@ import net.yura.domination.engine.core.Country;
 public abstract class BaseAI extends AI {
 	
 	protected static final int OCCUPATION_ALL = Integer.MAX_VALUE;
-	
-	public class Attack {
-		private final Country origin;
-		private final Country destination;
-		
-		public Attack(Country origin, Country destination) {
-			this.origin = origin;
-			this.destination = destination;
-			
-			if(origin == null || destination == null)
-				throw new NullPointerException("Origin or destination countries cannot be null!");
-			
-			if(origin.getOwner() != player)
-				throw new IllegalArgumentException("You can attack only from your own territories (was " + origin.getName() + ")");
-			
-			if(destination.getOwner() == player)
-				throw new IllegalArgumentException("You cannot attack your own territories (was " + destination.getName() + ")");
-		}
-		
-		public Country getOrigin() {
-			return this.origin;
-		}
-		
-		public Country getDestination() {
-			return this.destination;
-		}
-		
-		@Override
-		public String toString() {
-			return String.format("attack %d %d", origin.getColor(), destination.getColor());
-		}
-	}
-	
-	protected class Move {
-		private final Country origin;
-		private final Country destination;
-		private final int armies;
-		
-		public Move(Country origin, Country destination, int armies) {
-			this.origin = origin;
-			this.destination = destination;
-			this.armies = armies;
-			
-			if(origin == null || destination == null)
-				throw new NullPointerException("Origin or destination countries cannot be null!");
-			
-			if(origin.getOwner() != player || destination.getOwner() != player)
-				throw new IllegalArgumentException("You can move only between your countries (was " + origin.getName() + "-->" + destination.getName() + ")");
-			
-			if(!origin.getNeighbours().contains(destination))
-				throw new IllegalArgumentException("Nations " + origin + " and " + destination + " are not neighbours: cannot move armies!");
-			if(armies < origin.getArmies() - 1)
-				throw new IllegalArgumentException("You can move at most " + (origin.getArmies() - 1) + " armies from " + origin.getName() + " (was " + armies + ")");
-				
-		}
-		
-		public Country getOrigin() {
-			return this.origin;
-		}
-		
-		public Country getDestination() {
-			return this.destination;
-		}
-		
-		public int getArmies() {
-			return this.armies;
-		}
-		
-		@Override
-		public String toString() {
-			return String.format("movearmies %d %d %d", origin.getColor(), destination.getColor(), armies);
-		}
-	}
-	
-	protected class Trade implements Comparable<Trade> {	
-		private final Card card1;
-		private final Card card2;
-		private final Card card3;
-		
-		public Trade(Card card1, Card card2, Card card3) {
-			this.card1 = card1;
-			this.card2 = card2;
-			this.card3 = card3;
-			
-			if(card1 == null || card2 == null || card3 == null)
-				throw new NullPointerException("Cards cannot be null!");
-			
-			if(!game.checkTrade(card1, card2, card3))
-				throw new IllegalArgumentException("Invalid trade: " + card1 + ", " + card2 + ", " + card3);
-			
-			if(card1 == card2 || card2 == card3 || card1 == card3)
-				throw new IllegalArgumentException("Cannot trade the same card twice (was " + card1 + ", " + card2 + ", " + card3 + ")!");
-		}
-		
-		public Card[] getCards() {
-			return new Card[] {card1, card2, card3};
-		}
-		
-		@Override
-		public String toString() {
-			StringBuilder buf = new StringBuilder();
-			for(Card c : getCards()) {
-				if(c.getName().equals(Card.WILDCARD))
-					buf.insert(0, " wildcard");
-				else
-					buf.append(' ').append(c.getCountry().getColor());
-			}
-			
-			return buf.insert(0, "trade").toString();
-		}
-
-		public int getValue() {
-			int value = game.getTradeAbsValue(card1.getName(), card2.getName(), card3.getName(), game.getCardMode());
-			for(Card c : getCards()) {
-				Country country = c.getCountry();
-				if(country != null && country.getOwner() == player)
-					value += 2;
-			}
-			
-			return value;
-		}
-		
-		@Override
-		public int compareTo(Trade other) {
-			return getValue() - other.getValue();
-		}
-	}
-	
-	protected class Fortification {
-		private final Country country;
-		private final int armies;
-		
-		public Fortification(Country country, int armies) {
-			this.country = country;
-			this.armies = armies; 
-			
-			if(country == null)
-				throw new NullPointerException("Country cannot be null!");
-			
-			if(country.getOwner() != player)
-				throw new IllegalArgumentException("Cannot fortify a nation not owned by player: " + country.getName() + " [#" + country.getColor() + "]");
-			
-			if(country.getArmies() < 1)
-				throw new IllegalArgumentException("At least one army must be placed on the country " + country.getName() + " [#" + country.getColor() + "] (was " + armies + ")");
-		
-			if(armies > player.getExtraArmies())
-				throw new IllegalArgumentException("Trying to place " + armies + " armies on " + country.getName() + " while player has only " + player.getExtraArmies() + " left");
-		}
-		
-		public Country getCountry() {
-			return country;
-		}
-		
-		public int getArmies() {
-			return armies;
-		}
-		
-		@Override
-		public String toString() {
-			return String.format("placearmies %d %d", country.getColor(), armies);
-		}
-	}
 	
 	/**
 	 * Richiamato quando il giocatore &egrave; chiamato a giocare un tris di carte.
@@ -195,7 +37,7 @@ public abstract class BaseAI extends AI {
 			for(int j = i + 1; j < cards.length; ++j) {
 				for(int k = j + 1; k < cards.length; ++k) {
 					if(game.checkTrade(cards[i], cards[j], cards[k]))
-						trades.add(new Trade(cards[i], cards[j], cards[k]));
+						trades.add(new Trade(game, player, cards[i], cards[j], cards[k]));
 				}
 			}
 		}

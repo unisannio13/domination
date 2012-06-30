@@ -17,8 +17,8 @@ import net.yura.domination.engine.core.Country;
 public class AIEasy extends AICrap {
 
 	protected class Attack {
-	Country source;
-	Country destination;
+	public Country source;
+	public Country destination;
 
 	public Attack(Country s, Country d){
 	    source=s;
