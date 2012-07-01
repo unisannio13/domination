@@ -132,7 +132,7 @@ public abstract class BaseAI extends AI {
 		if(player.getCards().size() < 3 || (trade = onTrade()) == null) 
 			return "endtrade";
 		
-		return trade.toString();
+		return trade.toCommand(game, player);
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public abstract class BaseAI extends AI {
 			if(placement == null)
 				throw new NullPointerException("onFortification() cannot return null!");
 			
-			return placement.toString();
+			return placement.toCommand(game, player);
 		} 
 		
 		Country country = null;
@@ -171,7 +171,7 @@ public abstract class BaseAI extends AI {
 		if(attack == null)
 			return "endattack";
 		
-		return attack.toString();
+		return attack.toCommand(game, player);
 	}
 
 	@Override
