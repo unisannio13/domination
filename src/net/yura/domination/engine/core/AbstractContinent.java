@@ -2,7 +2,7 @@ package net.yura.domination.engine.core;
 
 import java.util.Vector;
 
-public interface AbstractContinent<P extends AbstractPlayer, C extends AbstractCountry> {
+public interface AbstractContinent<P extends AbstractPlayer<C>, C extends AbstractCountry<P, C, ? extends AbstractContinent<P, C>>> {
 
 	public abstract String getIdString();
 

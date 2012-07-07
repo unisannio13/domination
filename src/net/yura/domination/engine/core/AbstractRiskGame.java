@@ -2,7 +2,7 @@ package net.yura.domination.engine.core;
 
 import java.util.Vector;
 
-public interface AbstractRiskGame<P extends AbstractPlayer, C extends AbstractCountry, N extends AbstractContinent<P, C>> {
+public interface AbstractRiskGame<P extends AbstractPlayer<C>, C extends AbstractCountry<P, C, N>, N extends AbstractContinent<P, C>> {
 
 	/**
 	 * Returns the trading value of the given cards, without taking into account
@@ -117,7 +117,7 @@ public interface AbstractRiskGame<P extends AbstractPlayer, C extends AbstractCo
 
 	public abstract boolean checkTrade(Card card1, Card card2, Card card3);
 
-	public abstract AbstractCountry getDefender();
+	public abstract C getDefender();
 
 	public abstract int getMaxDefendDice();
 

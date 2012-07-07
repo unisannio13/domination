@@ -3,9 +3,10 @@ package net.yura.domination.engine.ai.commands;
 import net.yura.domination.engine.core.AbstractCountry;
 import net.yura.domination.engine.core.AbstractPlayer;
 import net.yura.domination.engine.core.AbstractRiskGame;
-import net.yura.domination.engine.core.Country;
 
+@SuppressWarnings("rawtypes")
 public class Attack implements Command {
+	
 	private final AbstractCountry origin;
 	private final AbstractCountry destination;
 	

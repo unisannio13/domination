@@ -4,7 +4,7 @@ import java.util.Vector;
 
 import net.yura.domination.engine.ai.AI;
 
-public interface AbstractPlayer<C extends Country> {
+public interface AbstractPlayer<C extends AbstractCountry<? extends AbstractPlayer<C>, C, ? extends AbstractContinent<? extends AbstractPlayer<C>, C>>> {
 
 	public abstract int getNoArmies();
 

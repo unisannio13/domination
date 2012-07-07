@@ -2,7 +2,7 @@ package net.yura.domination.engine.core;
 
 import java.util.Vector;
 
-public interface AbstractCountry<P extends Player, C extends AbstractCountry<P,C,N>, N extends Continent> {
+public interface AbstractCountry<P extends AbstractPlayer<C>, C extends AbstractCountry<P,C,N>, N extends AbstractContinent<P, C>> {
 
 	/**
 	 * gets the countries neighbours
