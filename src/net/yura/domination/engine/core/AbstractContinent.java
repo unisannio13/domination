@@ -37,7 +37,7 @@ public interface AbstractContinent<P extends AbstractPlayer<C>, C extends Abstra
 	 * @return player who owns the continent
 	 *  else null if no one owns the continent
 	 ****/
-	public abstract Player getOwner();
+	public abstract P getOwner();
 
 	/**
 	 * Returns a vector of the territories contained within a continent

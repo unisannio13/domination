@@ -24,7 +24,7 @@ public interface AbstractRiskGame<P extends AbstractPlayer<C>, C extends Abstrac
 	public abstract boolean NoEmptyCountries();
 
 	/**
-	 * get the value od the trade-cap
+	 * get the value of the trade-cap
 	 * @return boolean Return trues if tradecap is true and false otherwise
 	 */
 	public abstract boolean getTradeCap();
@@ -45,7 +45,7 @@ public interface AbstractRiskGame<P extends AbstractPlayer<C>, C extends Abstrac
 	 * Gets the attacking country
 	 * @return Country the attacking country
 	 */
-	public abstract Country getAttacker();
+	public abstract C getAttacker();
 
 	public abstract Vector<Card> getCards();
 
@@ -59,7 +59,7 @@ public interface AbstractRiskGame<P extends AbstractPlayer<C>, C extends Abstrac
 	/**
 	 * returns the country with the given color (ID)
 	 */
-	public abstract Country getCountryInt(int color);
+	public abstract C getCountryInt(int color);
 
 	/**
 	 * Gets a cards
@@ -80,7 +80,7 @@ public interface AbstractRiskGame<P extends AbstractPlayer<C>, C extends Abstrac
 	 * Gets the countries in the game
 	 * @return Vector Return the Countries in the current game
 	 */
-	public abstract Country[] getCountries();
+	public abstract C[] getCountries();
 
 	/**
 	 * Gets the continents in the game

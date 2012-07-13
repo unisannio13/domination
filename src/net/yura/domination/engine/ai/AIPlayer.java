@@ -52,6 +52,7 @@ public class AIPlayer {
 		try{
 			output = future.get(timeout, TimeUnit.SECONDS);
 		} catch (TimeoutException e){
+			System.out.println("Tempo scaduto per "+usethisAI.getPlayer().getName()+"!");
 			output = getOutput(game, new AICrap());
 		} catch (InterruptedException e) {
 			output = getOutput(game, new AICrap());
