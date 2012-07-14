@@ -1,26 +1,27 @@
 package net.yura.domination.engine.ai.commands;
 
+import net.yura.domination.engine.core.AbstractCountry;
 import net.yura.domination.engine.core.AbstractPlayer;
 import net.yura.domination.engine.core.AbstractRiskGame;
 import net.yura.domination.engine.core.Country;
 
 public class Move implements Command {
-	private final Country origin;
-	private final Country destination;
+	private final AbstractCountry<?,?,?> origin;
+	private final AbstractCountry<?,?,?> destination;
 	private final int armies;
 	
-	public Move(Country origin, Country destination, int armies) {
+	public Move(AbstractCountry<?,?,?> origin, AbstractCountry<?,?,?> destination, int armies) {
 		this.origin = origin;
 		this.destination = destination;
 		this.armies = armies;
 		
 	}
 	
-	public Country getOrigin() {
+	public AbstractCountry<?,?,?> getOrigin() {
 		return this.origin;
 	}
 	
-	public Country getDestination() {
+	public AbstractCountry<?,?,?> getDestination() {
 		return this.destination;
 	}
 	

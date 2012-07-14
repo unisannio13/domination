@@ -1,15 +1,16 @@
 package net.yura.domination.engine.ai.commands;
 
+import net.yura.domination.engine.core.AbstractCountry;
 import net.yura.domination.engine.core.AbstractPlayer;
 import net.yura.domination.engine.core.AbstractRiskGame;
 import net.yura.domination.engine.core.Country;
 
 public class Fortification implements Command {
-	private final Country country;
+	private final AbstractCountry<?,?,?> country;
 	private final int armies;
 	
-	public Fortification(Country country, int armies) {
-		this.country = country;
+	public Fortification(AbstractCountry<?, ?, ?> country2, int armies) {
+		this.country = country2;
 		this.armies = armies; 
 	}
 	
@@ -32,7 +33,7 @@ public class Fortification implements Command {
 		return toString();
 	}
 	
-	public Country getCountry() {
+	public AbstractCountry<?,?,?> getCountry() {
 		return country;
 	}
 	

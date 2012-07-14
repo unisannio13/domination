@@ -4,24 +4,23 @@ import net.yura.domination.engine.core.AbstractCountry;
 import net.yura.domination.engine.core.AbstractPlayer;
 import net.yura.domination.engine.core.AbstractRiskGame;
 
-@SuppressWarnings("rawtypes")
 public class Attack implements Command {
 	
-	private final AbstractCountry origin;
-	private final AbstractCountry destination;
+	private final AbstractCountry<?,?,?> origin;
+	private final AbstractCountry<?,?,?> destination;
 	
-	public Attack(AbstractCountry country, AbstractCountry neighbour) {
+	public Attack(AbstractCountry<?,?,?> country, AbstractCountry<?,?,?> neighbour) {
 		this.origin = country;
 		this.destination = neighbour;
 		
 		
 	}
 	
-	public AbstractCountry getOrigin() {
+	public AbstractCountry<?,?,?> getOrigin() {
 		return this.origin;
 	}
 	
-	public AbstractCountry getDestination() {
+	public AbstractCountry<?,?,?> getDestination() {
 		return this.destination;
 	}
 	
