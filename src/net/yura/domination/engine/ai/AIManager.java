@@ -125,7 +125,7 @@ public class AIManager {
 			JarEntry entry = entries.nextElement();
 			String name = entry.getName();
 			if(name.endsWith(".class")) {
-				String className = name.substring(0, name.lastIndexOf('.')).replace(File.separatorChar, '.');
+				String className = name.substring(0, name.lastIndexOf('.')).replace('/', '.');
 				int lastDot = className.lastIndexOf('.');
 				String simpleName = (lastDot != -1) ? className.substring(lastDot + 1) : className;
 				if(simpleName.startsWith("AI"))
