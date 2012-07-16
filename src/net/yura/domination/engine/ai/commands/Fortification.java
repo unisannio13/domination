@@ -30,7 +30,7 @@ public class Fortification implements Command {
 		if(armies > player.getExtraArmies())
 			throw new IllegalArgumentException("Trying to place " + armies + " armies on " + country.getName() + " while player has only " + player.getExtraArmies() + " left");
 	
-		return toString();
+		return String.format("placearmies %d %d", country.getColor(), armies);
 	}
 	
 	public AbstractCountry<?,?,?> getCountry() {
