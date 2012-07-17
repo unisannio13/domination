@@ -1,10 +1,12 @@
 //  Group D
 
-package net.yura.domination.engine.ai.core;
+package net.yura.domination.engine.ai;
 
 import java.util.Vector;
 
-import net.yura.domination.engine.ai.Discoverable;
+import net.yura.domination.engine.ai.api.Discoverable;
+import net.yura.domination.engine.ai.commands.Attack;
+import net.yura.domination.engine.ai.commands.Move;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
@@ -18,184 +20,173 @@ import net.yura.domination.engine.core.Player;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class AIHard extends AIEasy {
 	
+	
 	@Override
-	public void onInit() {
-		setCapitalAI(new AIHardCapital());
-		setMissionAI(new AIHardMission());
-	}
+	protected Country onCountrySelection() {
+		Continent[] cont = game.getContinents();
 
-	public String getPlaceArmies() {
+		/* ai looks at all the continents and tries to see which one it should place on
+		The formula for placement is :
+		extraArmiesForContinent - numberOfBorders - (neighborTerritories - numberOfBorders)+(territorynum * 0.9)-(IIF(numberofEnemyUnits=0,-3,numberofEnemyUnits) * 1.2)
+		 */
 
-		String output;
+		int extraArmiesForContinent = 0;
+		int numberOfBorders = 0;
+		int neighborTerritories = 0;
+		int numberofEnemyUnits = -3;
+		int territorynum = 0;
+		boolean isBorder = false;
+		double check = -20;
+		double ratio = -20;
+		String name=null;
+		int val = -1;
 
-		if ( game.NoEmptyCountries()==false ) {
+		for (int i=0; i<cont.length; i++) {
+			Vector ct = new Vector();
+			Continent co = cont[i];
+			
+			extraArmiesForContinent = co.getArmyValue();
+			
+			ct = co.getTerritoriesContained();
 
-			Continent[] cont = game.getContinents();
-
-			/* ai looks at all the continents and tries to see which one it should place on
-			The formula for placement is :
-			extraArmiesForContinent - numberOfBorders - (neighborTerritories - numberOfBorders)+(territorynum * 0.9)-(IIF(numberofEnemyUnits=0,-3,numberofEnemyUnits) * 1.2)
-			 */
-
-			int extraArmiesForContinent = 0;
-			int numberOfBorders = 0;
-			int neighborTerritories = 0;
-			int numberofEnemyUnits = -3;
-			int territorynum = 0;
-			boolean isBorder = false;
-			double check = -20;
-			double ratio = -20;
-			String name=null;
-			int val = -1;
-
-			for (int i=0; i<cont.length; i++) {
-				Vector ct = new Vector();
-				Continent co = cont[i];
-				
-				extraArmiesForContinent = co.getArmyValue();
-				
-				ct = co.getTerritoriesContained();
-
-				for (int j=0; j<ct.size(); j++) {
-					if ( ((Country)ct.elementAt(j)).getOwner() == player ) { 
-						/* This territory belongs to the player */
-						territorynum++; 
-					}
-					else {
-						if (((Country)ct.elementAt(j)).getOwner() != null) {
-							/* This territory belongs to an enemy */
-							if (numberofEnemyUnits == -3) {
-								numberofEnemyUnits = 1;
-							}
-							else {
-								numberofEnemyUnits++;
-							}
+			for (int j=0; j<ct.size(); j++) {
+				if ( ((Country)ct.elementAt(j)).getOwner() == player ) { 
+					/* This territory belongs to the player */
+					territorynum++; 
+				}
+				else {
+					if (((Country)ct.elementAt(j)).getOwner() != null) {
+						/* This territory belongs to an enemy */
+						if (numberofEnemyUnits == -3) {
+							numberofEnemyUnits = 1;
 						}
-					}
-					Vector w = ((Country)ct.elementAt(j)).getNeighbours();
-					for (int k=0; k<w.size(); k++) {
-						if (((Country)w.elementAt(k)).getContinent() != co) {
-							/* This is a territory to protect from */
-							neighborTerritories++;				      
-							isBorder = true;
-						}
-					}
-					if (isBorder) {
-						numberOfBorders++;
-					}
-				}
-
-				/* Calculate the value of that continent */ 
-
-				ratio = extraArmiesForContinent - numberOfBorders - (neighborTerritories - numberOfBorders)+(territorynum * 0.9) - (numberofEnemyUnits * 1.2);
-
-				if (check <= ratio && hasFreeTerritories(ct) == true) {
-					check = ratio;
-					val = i;
-				}
-
-				territorynum = 0;
-				numberofEnemyUnits = -3;
-				neighborTerritories = 0;
-				numberOfBorders = 0;
-			}
-			if (val==-1) { val=0; } // YURA: val is not being set
-
-			/* ..pick country from that continent */
-			boolean picked = false;
-			if (check > 0) {
-				Continent co = cont[val];
-				Vector ct = co.getTerritoriesContained();
-
-				for (int j=0; j<ct.size(); j++) {
-					if ( ((Country)ct.elementAt(j)).getOwner() == null )  {
-						name=((Country)ct.elementAt(j)).getColor()+"";
-						picked = true;
-						break;
-					}
-				}
-			}
-
-			if (picked == false) {
-				Continent co = cont[val];
-				Vector ct = co.getTerritoriesContained();
-
-				for (int j=0; j<ct.size(); j++) {
-					if ( ((Country)ct.elementAt(j)).getOwner() == null )  {
-						name=((Country)ct.elementAt(j)).getColor()+"";
-
-						Vector v = ((Country)ct.elementAt(j)).getNeighbours();
-						for (int k=0; k<v.size(); k++) { // YURA: was ct.size()
-							if (((Country)v.elementAt(k)).getOwner() != player && ((Country)ct.elementAt(j)).isNeighbours((Country)v.elementAt(k))) {
-								name=((Country)ct.elementAt(j)).getColor()+"";
-								break;
-							}
+						else {
+							numberofEnemyUnits++;
 						}
 					}
 				}
+				Vector w = ((Country)ct.elementAt(j)).getNeighbours();
+				for (int k=0; k<w.size(); k++) {
+					if (((Country)w.elementAt(k)).getContinent() != co) {
+						/* This is a territory to protect from */
+						neighborTerritories++;				      
+						isBorder = true;
+					}
+				}
+				if (isBorder) {
+					numberOfBorders++;
+				}
 			}
 
-			String s = blockOpponent(player);
-			if( s != null )
-				name = s;
+			/* Calculate the value of that continent */ 
 
-			if (name == null)
-				output = "autoplace";
+			ratio = extraArmiesForContinent - numberOfBorders - (neighborTerritories - numberOfBorders)+(territorynum * 0.9) - (numberofEnemyUnits * 1.2);
 
-			else
-				output = "placearmies " + name +" 1";
+			if (check <= ratio && hasFreeTerritories(ct) == true) {
+				check = ratio;
+				val = i;
+			}
+
+			territorynum = 0;
+			numberofEnemyUnits = -3;
+			neighborTerritories = 0;
+			numberOfBorders = 0;
 		}
-		else {
+		if (val==-1) { val=0; } // YURA: val is not being set
 
+		/* ..pick country from that continent */
+		boolean picked = false;
+		if (check > 0) {
+			Continent co = cont[val];
+			Vector ct = co.getTerritoriesContained();
 
-			Vector t = player.getTerritoriesOwned();
-//			Vector n;
-			String name = null;
-
-			for (int a=0; a< t.size() ; a++) {
-
-				if ( ownsNeighbours( (Country)t.elementAt(a)) == false && ((Country)t.elementAt(a)).getArmies() <= 11 ) {
-
-					name=((Country)t.elementAt(a)).getColor()+"";
+			for (int j=0; j<ct.size(); j++) {
+				if ( ((Country)ct.elementAt(j)).getOwner() == null )  {
+					name=((Country)ct.elementAt(j)).getColor()+"";
+					picked = true;
 					break;
 				}
-
-				if ( name != null ) { break; }
-
 			}
-
-			String s = keepBlocking(player);
-			if( s != null )
-				name = s;
-
-			String f = freeContinent(player);
-			if( f != null )
-				name = f;
-
-			String k = NextToEnemyToEliminate();
-			if (k != null)
-				name = k;
-
-			if (name == null)
-				name = findAttackableTerritory(player);
-
-			if ( name == null )
-				output = "placearmies " + ((Country)t.elementAt(0)).getColor() +" "+player.getExtraArmies();
-
-			else if (game.getSetup() )
-				output = "placearmies " + name +" "+player.getExtraArmies();
-
-			else
-				output = "placearmies " + name +" 1";
 		}
 
-		return output;
+		if (picked == false) {
+			Continent co = cont[val];
+			Vector ct = co.getTerritoriesContained();
+
+			for (int j=0; j<ct.size(); j++) {
+				if ( ((Country)ct.elementAt(j)).getOwner() == null )  {
+					name=((Country)ct.elementAt(j)).getColor()+"";
+
+					Vector v = ((Country)ct.elementAt(j)).getNeighbours();
+					for (int k=0; k<v.size(); k++) { // YURA: was ct.size()
+						if (((Country)v.elementAt(k)).getOwner() != player && ((Country)ct.elementAt(j)).isNeighbours((Country)v.elementAt(k))) {
+							name=((Country)ct.elementAt(j)).getColor()+"";
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		String s = blockOpponent(player);
+		if( s != null )
+			name = s;
+
+		if (name == null)
+			return null;
+
+		else
+			return game.getCountryInt(Integer.valueOf(name));
+	}
+
+	@Override
+	protected Country onCountryFortification() {
+	
+		Vector t = player.getTerritoriesOwned();
+//			Vector n;
+		String name = null;
+
+		for (int a=0; a< t.size() ; a++) {
+
+			if ( ownsNeighbours( (Country)t.elementAt(a)) == false && ((Country)t.elementAt(a)).getArmies() <= 11 ) {
+
+				name=((Country)t.elementAt(a)).getColor()+"";
+				break;
+			}
+
+			if ( name != null ) { break; }
+
+		}
+
+		String s = keepBlocking(player);
+		if( s != null )
+			name = s;
+
+		String f = freeContinent(player);
+		if( f != null )
+			name = f;
+
+		String k = NextToEnemyToEliminate();
+		if (k != null)
+			name = k;
+
+		if (name == null)
+			name = findAttackableTerritory(player);
+
+		if ( name == null )
+			return ((Country)t.elementAt(0));
+
+		else 
+			return game.getCountryInt(Integer.valueOf(name));
+
+	
 
 	}
 
-	public String getBattleWon() {
+	@Override
+	protected int onOccupation() {
 
-		String output;
+		int output;
 
 		/* Attempt to safeguard critical areas when moving armies to won country */
 
@@ -205,22 +196,22 @@ public class AIHard extends AIEasy {
 
 			/* Set 50% security limit */
 			if (attacker.getArmies() > 6)
-				output = "move " + (attacker.getArmies()-1);  // bug request ID: 1478706
+				output = (attacker.getArmies()-1);  // bug request ID: 1478706
 			else if (attacker.getArmies() > 3 && attacker.getArmies() <= 6)
-				output = "move " + (attacker.getArmies()-1);
+				output =  (attacker.getArmies()-1);
 			else
-				output = "move all";
+				output = OCCUPATION_ALL;
 		}
 		else
-			output="move all";
+			output = OCCUPATION_ALL;
 
 		return output;
 
 	}
-
-	public String getTacMove() {
-
-		String output=null;
+	
+	@Override
+	protected Move onArmyMove() {
+		Move output=null;
 
 		/* reinforces armies from less critical to more critical areas */
 
@@ -260,29 +251,26 @@ public class AIHard extends AIEasy {
 		}
 
 		if (receiver != null && receiver != sender) {
-			output= "movearmies " + ((Country)sender).getColor() + " " + ((Country)receiver).getColor() + " " + (((Country)sender).getArmies()-1);
+			output= new Move((Country)sender, ((Country)receiver),((Country)sender).getArmies()-1);
 			//System.out.println(((Country)sender).getName()); TESTING
 			//System.out.println(((Country)receiver).getName()); TESTING
 		}
 
-		if ( output == null ) {
-			output = "nomove";
-		}
 
 		return output;
 
 	}
 
 
-	public String getAttack() {
-		String output=null;
+	protected Attack onAttack() {
+		Attack output=null;
 		Vector t = player.getTerritoriesOwned();
 //		Vector n;
 //		boolean chosen = false;
 		Continent[] cont = game.getContinents();
 		Vector options = new Vector();
-		Attack temp=null;
-		Attack move=null;
+		OwnAttack temp=null;
+		OwnAttack move=null;
 
 		/**   // replace with findAttackableNeighbors
 	for (int a=0; a< t.size() ; a++) {
@@ -307,9 +295,9 @@ public class AIHard extends AIEasy {
 		Player[] playersGreatestToLeast = OrderPlayers(player);  
 		outer: for (int j=0; j<playersGreatestToLeast.length; j++) {
 			for (int i=0; i<options.size(); i++) {
-				temp = (Attack)options.get(i);
+				temp = (OwnAttack)options.get(i);
 				if ( ((Country) temp.destination).getOwner().equals(playersGreatestToLeast[j]) ){
-					output = temp.toString();
+					output = new Attack(temp.source, temp.destination);
 					//System.out.println("Most powerful opponent/attack: " + temp.destination.getOwner() + ": "+ output);    //TESTING
 					break outer;
 				}
@@ -361,8 +349,8 @@ public class AIHard extends AIEasy {
 			}
 		}  */
 				if (options.size() > 0) {
-					move = (Attack) options.elementAt( (int)Math.round(Math.random() * (options.size()-1) ) );
-					output = move.toString();
+					move = (OwnAttack) options.elementAt( (int)Math.round(Math.random() * (options.size()-1) ) );
+					output = new Attack(move.source, move.destination);
 					complex = true;
 					if (cont[i] == move.destination.getContinent()){
 						//System.out.println("Attempting to take over " + cont[i].getName() + ": " + move.toString() );   //Testing
@@ -418,8 +406,8 @@ public class AIHard extends AIEasy {
 			}  */
 				options = filterAttacks(options,1);
 				if (options.size() > 0) {
-					move = (Attack) options.elementAt( (int)Math.round(Math.random() * (options.size()-1) ) );
-					output = move.toString();
+					move = (OwnAttack) options.elementAt( (int)Math.round(Math.random() * (options.size()-1) ) );
+					output = new Attack(move.source, move.destination);
 				}
 			}
 		}
@@ -427,7 +415,7 @@ public class AIHard extends AIEasy {
 		// check to see if there are any continents that can be broken
 
 		Vector continentsToBreak = GetContinentsToBreak(player);
-		String tmp = null;
+		Attack tmp = null;
 		//                   for (int i=0; i<continentsToBreak.size() && tmp == null; i++) {
 		//                	   Vector countriesInContinent = ((Continent)continentsToBreak.get(i)).getTerritoriesContained();
 		//                	   for (int j=0; j<t.size() && tmp == null; j++) {
@@ -449,7 +437,7 @@ public class AIHard extends AIEasy {
 							if (  (((Country)t.get(j)).getArmies()-1 > ((Country)tNeighbors.get(k)).getArmies() 
 									|| (q==1 && ((Country)t.get(j)).getArmies() > 1)) &&
 									ShortPathToContinent((Continent)continentsToBreak.get(i), (Country)t.get(j), (Country)tNeighbors.get(k), q)  ) {
-								tmp = "attack " + ((Country)t.get(j)).getColor() + " " + ((Country)tNeighbors.get(k)).getColor();
+								tmp = new Attack((Country)t.get(j), ((Country)tNeighbors.get(k)));
 								break outer;
 							}
 
@@ -494,49 +482,14 @@ public class AIHard extends AIEasy {
 				options = targetTerritories( ((Player)cankill.elementAt(i)).getTerritoriesOwned()  );
 				options = filterAttacks(options, -2);
 				if (options.size() > 0) {
-					move = (Attack) options.elementAt( (int)Math.round(Math.random() * (options.size()-1) ) );
-					output = move.toString();
+					move = (OwnAttack) options.elementAt( (int)Math.round(Math.random() * (options.size()-1) ) );
+					output = new Attack(move.source, move.destination);
 					//System.out.println("Targeting player: " + ((Player)cankill.elementAt(i)).getName() + " - " + output); //TESTING
 				}
 			}
 		}
 
-		if ( output == null ) {
-			output="endattack";
-		}
 		//System.out.println("Final Choice: " + output);
-
-		return output;
-
-	}
-
-	public String getRoll() {
-
-		String output;
-
-		int n=((Country)game.getAttacker()).getArmies() - 1;
-
-
-		/* Only roll for as long as while attacking player has more armies than defending player */
-		int m=((Country)game.getDefender()).getArmies();
-
-		// If we are trying to eliminate a player, fight longer.
-		if (game.getDefender().getOwner().getTerritoriesOwnedSize() < 4)
-			m -= 3;
-
-		//If we are trying to break a continent bonus, fight to the death.
-		if (game.getDefender().getContinent().isOwned(game.getDefender().getOwner()))
-			m = 0;
-
-		if (n > 3 && n > m) {
-			output= "roll "+3;
-		}
-		else if (n > 0 && n <= 3 && n > m) {
-			output= "roll "+n;
-		}
-		else {
-			output= "retreat";
-		}
 
 		return output;
 
@@ -604,7 +557,7 @@ public class AIHard extends AIEasy {
 					source=(Country)n.elementAt(b);
 					if ( source.isNeighbours(target) && source.getOwner() == player && source.getArmies() > 1) {     // simplify logic
 						//output.add( "attack " + source.getColor() + " " + target.getColor() );
-						output.add(new Attack(source,target));
+						output.add(new OwnAttack(source,target));
 					}
 				}
 			}

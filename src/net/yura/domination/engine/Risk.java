@@ -31,11 +31,11 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import net.yura.domination.engine.ai.AI;
-import net.yura.domination.engine.ai.AIManager;
-import net.yura.domination.engine.ai.AIPlayer;
-import net.yura.domination.engine.ai.EnemyCommandsEventSource;
-import net.yura.domination.engine.ai.core.AICrap;
+import net.yura.domination.engine.ai.AICrap;
+import net.yura.domination.engine.ai.api.AI;
+import net.yura.domination.engine.ai.api.AIManager;
+import net.yura.domination.engine.ai.api.AIPlayer;
+import net.yura.domination.engine.ai.api.EnemyCommandsEventSource;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;

@@ -27,7 +27,7 @@ import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 
 import net.yura.domination.engine.Risk;
-import net.yura.domination.engine.ai.AI;
+import net.yura.domination.engine.ai.api.AI;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 

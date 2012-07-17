@@ -1,12 +1,12 @@
 // Yura Mamyrin
 
-package net.yura.domination.engine.ai.core;
+package net.yura.domination.engine.ai;
 
 import java.util.Random;
 import java.util.Vector;
 
-import net.yura.domination.engine.ai.AI;
-import net.yura.domination.engine.ai.Discoverable;
+import net.yura.domination.engine.ai.api.AI;
+import net.yura.domination.engine.ai.api.Discoverable;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;

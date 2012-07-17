@@ -40,6 +40,9 @@ public class Attack implements Command {
 		if(destination.getOwner() == player)
 			throw new IllegalArgumentException("You cannot attack your own territories (was " + destination.getName() + ")");
 		
+		if(origin.getArmies() < 2)
+			throw new IllegalArgumentException("You cannot attack with fewer than 2 armies (in " + origin.getName() +")");
+		
 		return toString();
 	}
 }

@@ -2,7 +2,7 @@
 
 package net.yura.domination.engine;
 
-import net.yura.domination.engine.ai.AI;
+import net.yura.domination.engine.ai.api.AI;
 import net.yura.domination.engine.core.RiskGame;
 
 /**

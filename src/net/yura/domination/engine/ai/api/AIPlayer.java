@@ -1,4 +1,4 @@
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.api;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import net.yura.domination.engine.Risk;
-import net.yura.domination.engine.ai.core.AICrap;
+import net.yura.domination.engine.ai.AICrap;
 import net.yura.domination.engine.core.RiskGame;
 
 public class AIPlayer {

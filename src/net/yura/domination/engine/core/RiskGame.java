@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.engine.ai.AI;
-import net.yura.domination.engine.ai.EnemyCommandsEventSource;
-import net.yura.domination.engine.ai.EnemyCommandsListener;
+import net.yura.domination.engine.ai.api.AI;
+import net.yura.domination.engine.ai.api.EnemyCommandsEventSource;
+import net.yura.domination.engine.ai.api.EnemyCommandsListener;
 import net.yura.domination.engine.translation.MapTranslator;
 import net.yura.domination.logger.RiskLogger;
 

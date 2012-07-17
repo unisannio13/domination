@@ -1,4 +1,4 @@
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.api;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -103,7 +103,7 @@ public abstract class BaseAI extends AI {
 	 * @return il numero di dadi con cui attaccare, {@code 0} per ritirarsi dall'attacco
 	 */
 	protected int onAttackRoll() {
-		return Math.min(game.getAttacker().getArmies() - 1, 3);
+		return Math.min(game.getAttacker().getArmies() - 1, (int) Math.round(Math.random()) + 2);
 	}
 	
 	/**

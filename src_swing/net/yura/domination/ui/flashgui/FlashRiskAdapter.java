@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.RiskUIUtil;
-import net.yura.domination.engine.ai.AI;
+import net.yura.domination.engine.ai.api.AI;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.PicturePanel;

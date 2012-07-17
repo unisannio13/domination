@@ -2,7 +2,7 @@ package net.yura.domination.engine.core;
 
 import java.util.Vector;
 
-import net.yura.domination.engine.ai.AI;
+import net.yura.domination.engine.ai.api.AI;
 
 public interface AbstractPlayer<C extends AbstractCountry<? extends AbstractPlayer<C>, C, ? extends AbstractContinent<? extends AbstractPlayer<C>, C>>> {
 

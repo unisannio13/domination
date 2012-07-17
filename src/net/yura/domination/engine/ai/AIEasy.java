@@ -1,11 +1,15 @@
 // Yura Mamyrin
 
-package net.yura.domination.engine.ai.core;
+package net.yura.domination.engine.ai;
 
 import java.util.Vector;
 
-import net.yura.domination.engine.ai.Discoverable;
+import net.yura.domination.engine.ai.api.BaseAI;
+import net.yura.domination.engine.ai.api.Discoverable;
+import net.yura.domination.engine.ai.commands.Attack;
+import net.yura.domination.engine.ai.commands.Fortification;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.Player;
 
 /**
  * <p> Class for AIEasyPlayer </p>
@@ -14,13 +18,13 @@ import net.yura.domination.engine.core.Country;
 
 @Discoverable
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class AIEasy extends AICrap {
+public class AIEasy extends BaseAI {
 
-	protected class Attack {
+	protected class OwnAttack {
 	public Country source;
 	public Country destination;
 
-	public Attack(Country s, Country d){
+	public OwnAttack(Country s, Country d){
 	    source=s;
 	    destination=d;
 	}
@@ -31,32 +35,11 @@ public class AIEasy extends AICrap {
 
     }
 
-    public String getPlaceArmies() {
-		if ( game.NoEmptyCountries()==false ) {
-		    return "autoplace";
-		}
-		else {
-		    Vector t = player.getTerritoriesOwned();
-		    String name=null;
-			name = findAttackableTerritory(player);
-			if ( name == null ) {
-			return "placearmies " + ((Country)t.elementAt(0)).getColor() +" "+player.getExtraArmies()  ;
-		    }
-
-		    if (game.getSetup() ) {
-			return "placearmies " + name +" "+player.getExtraArmies() ;
-		    }
-
-		    return "placearmies " + name +" 1";
-
-		}
-
-    }
-
-    public String getAttack() {
+    @Override
+    protected Attack onAttack() {
 	//Vector t = player.getTerritoriesOwned();
 	Vector outputs = new Vector();
-	Attack move;
+	OwnAttack move;
 
 	/*  // Extract method: findAttackableNeighbors() 
 	Vector n;
@@ -72,22 +55,12 @@ public class AIEasy extends AICrap {
 	}  */
 	outputs = findAttackableNeighbors(player.getTerritoriesOwned(),0);
 	if (outputs.size() > 0) {
-		move = (Attack) outputs.elementAt( (int)Math.round(Math.random() * (outputs.size()-1) ) );
+		move = (OwnAttack) outputs.elementAt( (int)Math.round(Math.random() * (outputs.size()-1) ) );
 		//System.out.println(player.getName() + ": "+ move.toString());    //TESTING
-		return move.toString();
+		return new Attack(move.source, move.destination);
 		//return (String)outputs.elementAt( (int)Math.round(Math.random() * (outputs.size()-1) ) );
 	}
-	return "endattack";
-    }
-
-
-
-    public String getRoll() {
-	    int n=((Country)game.getAttacker()).getArmies() - 1;
-	    if (n > 3) {
-		    return "roll "+3;
-	    }
-	    return "roll "+n;
+	return null;
     }
 
 
@@ -117,7 +90,7 @@ public class AIEasy extends AICrap {
 			( (double)(source.getArmies()/target.getArmies()) > ratio) 
 		      	) {     // simplify logic
 			//output.add( "attack " + source.getColor() + " " + target.getColor() );
-			output.add(new Attack(source,target));
+			output.add(new OwnAttack(source,target));
 		    }
 		}
 	    }
@@ -144,7 +117,7 @@ public class AIEasy extends AICrap {
 		    target=(Country)n.elementAt(b);
 		    if ( target.getOwner() != player ) {     // simplify logic
 			//output.add( "attack " + source.getColor() + " " + target.getColor() );
-			output.add(new Attack(source,target));
+			output.add(new OwnAttack(source,target));
 		    }
 		}
 	    }
@@ -160,10 +133,10 @@ public class AIEasy extends AICrap {
      *******************/
 
     public Vector filterAttacks(Vector options, int advantage){
-	Attack temp = null;
+	OwnAttack temp = null;
 	Vector moves = new Vector();
 	for(int j=0; j<options.size(); j++){
-		temp=(Attack)options.get(j);
+		temp=(OwnAttack)options.get(j);
 		if ( ( ((Country)temp.source).getArmies() - ((Country)temp.destination).getArmies()) > advantage) {
 			moves.add(temp);
 		}
@@ -171,4 +144,37 @@ public class AIEasy extends AICrap {
 	return moves;
     }
 
+	@Override
+	protected Country onCountryFortification() {
+		Vector t = player.getTerritoriesOwned();
+	    String name=null;
+		name = findAttackableTerritory(player);
+		if ( name == null ) {
+		return ((Country)t.elementAt(0));
+	    }
+
+		return game.getCountryInt(Integer.valueOf(name)) ;
+	    
+	}
+	
+	@Override
+	protected Fortification onFortification() {
+		return new Fortification(onCountryFortification(), player.getExtraArmies());
+	}
+
+	public String findAttackableTerritory(Player p) {
+    	Vector countries = p.getTerritoriesOwned();
+    	
+    	for (int i=0; i<countries.size(); i++) {
+    		Vector neighbors = ((Country)countries.elementAt(i)).getNeighbours();
+    		for (int j=0; j<neighbors.size(); j++) {
+    			if (((Country)neighbors.elementAt(j)).getOwner() != p) {
+    				if ((p.getCapital() != null && ((Country)countries.elementAt(i)).getColor() != p.getCapital().getColor()) || p.getCapital() == null)
+    					return ((Country)countries.elementAt(i)).getColor()+"";
+    			}
+    		}
+    	}
+    	
+    	return null;
+    }
 }

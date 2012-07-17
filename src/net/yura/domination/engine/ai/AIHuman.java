@@ -1,7 +1,7 @@
-package net.yura.domination.engine.ai.core;
+package net.yura.domination.engine.ai;
 
-import net.yura.domination.engine.ai.AI;
-import net.yura.domination.engine.ai.Discoverable;
+import net.yura.domination.engine.ai.api.AI;
+import net.yura.domination.engine.ai.api.Discoverable;
 
 /**
  * Utilizzata solo per indicare che un certo giocatore è umano

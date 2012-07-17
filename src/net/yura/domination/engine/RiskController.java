@@ -4,7 +4,7 @@ package net.yura.domination.engine;
 
 import java.util.Vector;
 
-import net.yura.domination.engine.ai.AI;
+import net.yura.domination.engine.ai.api.AI;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.logger.RiskLogger;
 

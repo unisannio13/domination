@@ -1,4 +1,4 @@
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.api;
 
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;

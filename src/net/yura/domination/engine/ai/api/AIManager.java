@@ -1,4 +1,4 @@
-package net.yura.domination.engine.ai;
+package net.yura.domination.engine.ai.api;
 
 import java.io.File;
 import java.io.FileFilter;
