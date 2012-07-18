@@ -94,7 +94,7 @@ public class AIManager {
 			else {
 				String absRoot = root.getAbsolutePath();
 				String absFile = file.getAbsolutePath();
-				String className = absFile.substring(absRoot.length() + 1, absFile.lastIndexOf('.')).replace('/', '.');
+				String className = absFile.substring(absRoot.length() + 1, absFile.lastIndexOf('.')).replace(File.separatorChar, '.');
 				int lastDot = className.lastIndexOf('.');
 				String simpleName = (lastDot != -1) ? className.substring(lastDot + 1) : className;
 				if(simpleName.startsWith("AI"))
