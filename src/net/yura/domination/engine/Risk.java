@@ -32,6 +32,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import net.yura.domination.engine.ai.AICrap;
+import net.yura.domination.engine.ai.AIHuman;
 import net.yura.domination.engine.ai.api.AI;
 import net.yura.domination.engine.ai.api.AIManager;
 import net.yura.domination.engine.ai.api.AIPlayer;
@@ -1336,6 +1337,7 @@ public class Risk extends Thread {
 						// Math.round(Math.random()*Long.MAX_VALUE) )
 
 						Class<? extends AI> clazz = AIManager.getAIClass(type);
+						if(clazz == null) { clazz = AIHuman.class; }
 						AI ai = null;
 						try {
 							ai = (AI) clazz.newInstance();

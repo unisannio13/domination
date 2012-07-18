@@ -94,7 +94,7 @@ public class AIManager {
 			else {
 				String absRoot = root.getAbsolutePath();
 				String absFile = file.getAbsolutePath();
-				String className = absFile.substring(absRoot.length() + 1, absFile.lastIndexOf('.')).replace(File.separatorChar, '.');
+				String className = absFile.substring(absRoot.length() + 1, absFile.lastIndexOf('.')).replace('/', '.');
 				int lastDot = className.lastIndexOf('.');
 				String simpleName = (lastDot != -1) ? className.substring(lastDot + 1) : className;
 				if(simpleName.startsWith("AI"))
@@ -146,7 +146,7 @@ public class AIManager {
 	 * @return
 	 */
 	public static Class<? extends AI> getAIClass(String id){
-		return aiClasses.get(id).getAIclass();
+		return aiClasses.containsKey(id) ? aiClasses.get(id).getAIclass() : null;
 	}
 	
 	
